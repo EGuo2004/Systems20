@@ -30,15 +30,11 @@ int server_handshake(int *to_client) {
   printf("Removing WKP\n");
   remove(WKP);
 
-  print("Opening Secret\n");
+  printf("Opening Secret\n");
   *to_client = open(secret,O_WRONLY);
-  if(to_client == -1) {
-    printf("error: %s\n", strerror(errno));
-    return 0;
-  }
 
   printf("Writing to ACK\n");
-  write(to_client,ACK,sizeof(ACK));
+  write(*to_client,ACK,sizeof(ACK));
 
   printf("Recieving Response\n");
   char* returnval = calloc(HANDSHAKE_BUFFER_SIZE, sizeof(char));;
@@ -64,13 +60,9 @@ int client_handshake(int *to_server) {
 
   printf("Opening WKP\n");
   *to_server = open(WKP,O_WRONLY);
-  if(to_server == -1) {
-    printf("error: %s\n", strerror(errno));
-    return 0;
-  }
 
   printf("Writing to Secret\n");
-  write(to_server,secret,HANDSHAKE_BUFFER_SIZE);
+  write(*to_server,secret,HANDSHAKE_BUFFER_SIZE);
 
   printf("Opening Secret\n");
   int from_server = open(secret, O_RDONLY);
